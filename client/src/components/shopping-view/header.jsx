@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-// import { logoutUser } from "@/store/auth-slice";
+import { logoutUser } from "@/store/auth-slice";
 // import UserCartWrapper from "./cart-wrapper";
 // import { useEffect, useState } from "react";
 // import { fetchCartItems } from "@/store/shop/cart-slice";
@@ -64,8 +64,8 @@ function MenuItems() {
 
 function HeaderRightContent() {
   const { user } = useSelector((state) => state.auth);
-  const { cartItems } = useSelector((state) => state.shopCart);
-  const [openCartSheet, setOpenCartSheet] = useState(false);
+  //const { cartItems } = useSelector((state) => state.shopCart);
+  //const [openCartSheet, setOpenCartSheet] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -73,11 +73,11 @@ function HeaderRightContent() {
     dispatch(logoutUser());
   }
 
-  useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchCartItems(user?.id));
+  // }, [dispatch]);
 
-  console.log(cartItems, "sangam");
+  // console.log(cartItems, "sangam");
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
@@ -108,21 +108,24 @@ function HeaderRightContent() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="bg-black">
-            <AvatarFallback className="bg-black text-white font-extrabold">
+            <AvatarFallback className="bg-black text-white font-extrabold cursor-pointer">
               {user?.userName[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" className="w-56">
+        <DropdownMenuContent side="right" className="w-56 ">
           <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
-            <UserCog className="mr-2 h-4 w-4" />
+          <DropdownMenuItem
+            onClick={() => navigate("/shop/account")}
+            className="cursor-pointer"
+          >
+            <UserCog className="mr-2 h-4 w-4 " />
             Account
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
+          <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+            <LogOut className="mr-2 h-4 w-4 " />
             Logout
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -132,7 +135,8 @@ function HeaderRightContent() {
 }
 
 function ShoppingHeader() {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  //console.log(user, "user");
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -150,20 +154,16 @@ function ShoppingHeader() {
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs">
             <MenuItems />
-            {/* <HeaderRightContent /> */}
+            <HeaderRightContent />
           </SheetContent>
         </Sheet>
         <div className="hidden lg:block">
           <MenuItems />
         </div>
 
-        <div className="hidden lg:block">{/* <HeaderRightContent /> */}</div>
-
-        {isAuthenticated ? (
-          <div>
-            <HeaderRightContent />
-          </div>
-        ) : null}
+        <div className="hidden lg:block">
+          <HeaderRightContent />
+        </div>
       </div>
     </header>
   );

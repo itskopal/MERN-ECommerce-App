@@ -116,4 +116,27 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser, logoutUser, authMiddleware };
+//fetch all users
+const fetchAllUsers = async (req, res) => {
+  try {
+    const listOfUsers = await User.find({});
+    res.status(200).json({
+      success: true,
+      data: listOfUsers,
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: "Error occured",
+    });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  authMiddleware,
+  fetchAllUsers,
+};
