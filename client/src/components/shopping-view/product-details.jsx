@@ -5,19 +5,19 @@ import { Dialog, DialogContent } from "../ui/dialog";
 import { Separator } from "../ui/separator";
 import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
-// import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
-// import { setProductDetails } from "@/store/shop/products-slice";
 import { Label } from "../ui/label";
 // import StarRatingComponent from "../common/star-rating";
 import { useEffect, useState } from "react";
 // import { addReview, getReviews } from "@/store/shop/review-slice";
 import { useToast } from "@/hooks/use-toast";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
+import { setProductDetails } from "@/store/shop/products-slice";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
   const [rating, setRating] = useState(0);
   const dispatch = useDispatch();
-  //   const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
   //   const { cartItems } = useSelector((state) => state.shopCart);
   //   const { reviews } = useSelector((state) => state.shopReview);
 
@@ -45,25 +45,25 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
     //     }
     //   }
     // }
-    // dispatch(
-    //   addToCart({
-    //     userId: user?.id,
-    //     productId: getCurrentProductId,
-    //     quantity: 1,
-    //   })
-    // ).then((data) => {
-    //   if (data?.payload?.success) {
-    //     dispatch(fetchCartItems(user?.id));
-    //     toast({
-    //       title: "Product is added to cart",
-    //     });
-    //   }
-    // });
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Product is added to cart",
+        });
+      }
+    });
   }
 
   function handleDialogClose() {
     setOpen(false);
-    // dispatch(setProductDetails());
+    dispatch(setProductDetails());
     // setRating(0);
     // setReviewMsg("");
   }
@@ -172,6 +172,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             )}
           </div>
           <Separator />
+
           <div className="max-h-[300px] overflow-auto">
             <h2 className="text-xl font-bold mb-4">Reviews</h2>
             <div className="grid gap-6">

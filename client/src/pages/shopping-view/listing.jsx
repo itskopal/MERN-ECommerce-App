@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { sortOptions } from "@/config";
 import { useToast } from "@/hooks/use-toast";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
 } from "@/store/shop/products-slice";
-// import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { ArrowUpDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,15 +42,15 @@ function ShoppingListing() {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
-  // const { cartItems } = useSelector((state) => state.shopCart);
-  // const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const { user } = useSelector((state) => state.auth);
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
   const { toast } = useToast();
 
-  // const categorySearchParam = searchParams.get("category");
+  const categorySearchParam = searchParams.get("category");
 
   function handleSort(value) {
     setSort(value);
@@ -84,7 +84,9 @@ function ShoppingListing() {
   }
 
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    //   console.log(cartItems);
+    //console.log(getCurrentProductId);
+    //console.log(cartItems);
+
     //   let getCartItems = cartItems.items || [];
     //   if (getCartItems.length) {
     //     const indexOfCurrentItem = getCartItems.findIndex(
@@ -101,26 +103,27 @@ function ShoppingListing() {
     //       }
     //     }
     //   }
-    //   dispatch(
-    //     addToCart({
-    //       userId: user?.id,
-    //       productId: getCurrentProductId,
-    //       quantity: 1,
-    //     })
-    //   ).then((data) => {
-    //     if (data?.payload?.success) {
-    //       dispatch(fetchCartItems(user?.id));
-    //       toast({
-    //         title: "Product is added to cart",
-    //       });
-    //     }
-    //   });
+
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast({
+          title: "Product is added to cart",
+        });
+      }
+    });
   }
 
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-  }, []);
+  }, [categorySearchParam]);
 
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {

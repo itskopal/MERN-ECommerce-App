@@ -2,7 +2,7 @@ import { Minus, Plus, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCartItem, updateCartQuantity } from "@/store/shop/cart-slice";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 function UserCartItemsContent({ cartItem }) {
   const { user } = useSelector((state) => state.auth);
@@ -91,7 +91,9 @@ function UserCartItemsContent({ cartItem }) {
             <Minus className="w-4 h-4" />
             <span className="sr-only">Decrease</span>
           </Button>
+
           <span className="font-semibold">{cartItem?.quantity}</span>
+
           <Button
             variant="outline"
             className="h-8 w-8 rounded-full"
@@ -99,7 +101,7 @@ function UserCartItemsContent({ cartItem }) {
             onClick={() => handleUpdateQuantity(cartItem, "plus")}
           >
             <Plus className="w-4 h-4" />
-            <span className="sr-only">Decrease</span>
+            <span className="sr-only">Increase</span>
           </Button>
         </div>
       </div>
