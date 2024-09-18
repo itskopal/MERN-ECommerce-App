@@ -87,12 +87,12 @@ function HeaderRightContent() {
           onClick={() => setOpenCartSheet(true)}
           variant="outline"
           size="icon"
-          //className="relative"
+          className="relative"
         >
           <ShoppingCart className="w-6 h-6" />
-          {/* <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
+          <span className="absolute top-[-5px] right-[-10px] font-bold text-sm bg-red-700 text-white rounded-2xl w-5">
             {cartItems?.items?.length || 0}
-          </span> */}
+          </span>
           <span className="sr-only">User cart</span>
         </Button>
 
