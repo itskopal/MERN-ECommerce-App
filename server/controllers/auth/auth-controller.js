@@ -14,6 +14,13 @@ const registerUser = async (req, res) => {
         message: "User Already exists with the same email! Please try again",
       });
 
+    // if (!validator.isEmail(email)) {
+    //   return res.json({
+    //     success: false,
+    //     message: "Please enter a valid email! ",
+    //   })
+    // }
+
     const hashPassword = await bcrypt.hash(password, 12);
     const newUser = new User({
       userName,

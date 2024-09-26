@@ -15,6 +15,8 @@ const shopReviewRouter = require("./routes/shop/review-routes");
 
 const commonFeatureRouter = require("./routes/common/feature-routes");
 
+const { connectCloudinary } = require("./helpers/cloudinary");
+
 //create a database connection -> u can also
 //create a separate file for this and then import/use that file here
 
@@ -28,6 +30,8 @@ mongoose
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+connectCloudinary();
 
 app.use(
   cors({

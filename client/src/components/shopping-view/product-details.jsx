@@ -20,8 +20,9 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const { reviews } = useSelector((state) => state.shopReview);
-
   const { toast } = useToast();
+
+  const [image, setImage] = useState("");
 
   function handleRatingChange(getRating) {
     //console.log(getRating, "getRating");
@@ -90,7 +91,10 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   }
 
   useEffect(() => {
-    if (productDetails !== null) dispatch(getReviews(productDetails?._id));
+    if (productDetails !== null) {
+      dispatch(getReviews(productDetails?._id));
+      setImage(productDetails?.images[0]);
+    }
   }, [productDetails]);
 
   //console.log(reviews, "reviews");
@@ -104,15 +108,37 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]">
-        <div className="relative overflow-hidden rounded-lg">
+        {/* <div className="relative overflow-hidden rounded-lg">
           <img
-            src={productDetails?.image}
+            src={productDetails?.images[0]}
             alt={productDetails?.title}
             width={600}
             height={600}
             className="aspect-square w-full object-cover"
           />
+        </div> */}
+        {/* product images */}
+        <div className="flex-1 flex flex-col-reverse items-center gap-3 sm:flex-row">
+          <div className="flex sm:flex-col overflow-x-auto sm:overflow-y-scroll justify-between sm:justify-normal ">
+            {productDetails?.images.map((item, index) => (
+              <img
+                onClick={() => setImage(item)}
+                src={item}
+                key={index}
+                className="w-[10%] h-[80px] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
+                alt={productDetails?.title}
+              />
+            ))}
+          </div>
+          <div className="w-full sm:w-[80%]">
+            <img
+              src={image}
+              className="w-full h-auto"
+              alt={productDetails?.title}
+            />
+          </div>
         </div>
+
         <div className="">
           <div>
             <h1 className="text-3xl font-extrabold">{productDetails?.title}</h1>

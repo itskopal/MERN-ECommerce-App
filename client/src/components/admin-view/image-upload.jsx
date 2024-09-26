@@ -1,3 +1,4 @@
+//single upload
 import { FileIcon, UploadCloudIcon, XIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -18,7 +19,7 @@ function ProductImageUpload({
 }) {
   const inputRef = useRef(null);
 
-  // console.log(isEditMode, "isEditMode");
+  console.log(isEditMode, "isEditMode");
 
   function handleImageFileChange(event) {
     console.log(event.target.files, "event.target.files");
@@ -66,7 +67,9 @@ function ProductImageUpload({
   }, [imageFile]);
 
   return (
-    <div className={`w-full mt-4 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}>
+    <div
+      className={`w-full  mt-4 ${isCustomStyling ? "" : "max-w-md mx-auto"}`}
+    >
       <Label className="text-lg font-semibold mb-2 block">Upload Image</Label>
       <div
         onDragOver={handleDragOver}

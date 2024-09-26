@@ -45,44 +45,48 @@ function AdminOrderDetailsView({ orderDetails }) {
   }
 
   return (
-    <DialogContent className="sm:max-w-[600px]">
+    <DialogContent className="sm:max-w-[800px]">
       <div className="grid gap-6">
-        <div className="grid gap-2">
-          <div className="flex mt-5 items-center justify-between">
-            <p className="">Order ID</p>
-            <Label>{orderDetails?._id}</Label>
+        <div className="flex justify-between items-center gap-10 mt-5">
+          <div className="w-[50%]">
+            <div className="flex mt-1 items-center justify-between">
+              <p className="font-medium">Order ID</p>
+              <Label>{orderDetails?._id}</Label>
+            </div>
+            <div className="flex mt-1 items-center justify-between">
+              <p className="font-medium">Order Date</p>
+              <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
+            </div>
+            <div className="flex mt-1 items-center justify-between">
+              <p className="font-medium">Order Price</p>
+              <Label>${orderDetails?.totalAmount}</Label>
+            </div>
           </div>
-          <div className="flex mt-1 items-center justify-between">
-            <p className="">Order Date</p>
-            <Label>{orderDetails?.orderDate.split("T")[0]}</Label>
-          </div>
-          <div className="flex mt-1 items-center justify-between">
-            <p className="">Order Price</p>
-            <Label>${orderDetails?.totalAmount}</Label>
-          </div>
-          <div className="flex mt-1 items-center justify-between">
-            <p className="">Payment method</p>
-            <Label>{orderDetails?.paymentMethod}</Label>
-          </div>
-          <div className="flex mt-1 items-center justify-between">
-            <p className="">Payment Status</p>
-            <Label>{orderDetails?.paymentStatus}</Label>
-          </div>
-          <div className="flex mt-1 items-center justify-between">
-            <p className="">Order Status</p>
-            <Label>
-              <Badge
-                className={`py-1 px-3 ${
-                  orderDetails?.orderStatus === "confirmed"
-                    ? "bg-green-500"
-                    : orderDetails?.orderStatus === "rejected"
-                    ? "bg-red-600"
-                    : "bg-black"
-                }`}
-              >
-                {orderDetails?.orderStatus}
-              </Badge>
-            </Label>
+          <div className="w-[50%]">
+            <div className="flex mt-1 items-center justify-between">
+              <p className="font-medium">Payment method</p>
+              <Label>{orderDetails?.paymentMethod}</Label>
+            </div>
+            <div className="flex mt-1 items-center justify-between">
+              <p className="font-medium">Payment Status</p>
+              <Label>{orderDetails?.paymentStatus}</Label>
+            </div>
+            <div className="flex mt-1 items-center justify-between">
+              <p className="font-medium">Order Status</p>
+              <Label>
+                <Badge
+                  className={`py-1 px-3 ${
+                    orderDetails?.orderStatus === "confirmed"
+                      ? "bg-green-500"
+                      : orderDetails?.orderStatus === "rejected"
+                      ? "bg-red-600"
+                      : "bg-black"
+                  }`}
+                >
+                  {orderDetails?.orderStatus}
+                </Badge>
+              </Label>
+            </div>
           </div>
         </div>
         <Separator />
@@ -107,6 +111,7 @@ function AdminOrderDetailsView({ orderDetails }) {
             </ul>
           </div>
         </div>
+        <Separator />
         <div className="grid gap-4">
           <div className="grid gap-2">
             <div className="font-medium">Shipping Info</div>
