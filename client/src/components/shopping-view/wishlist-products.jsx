@@ -5,7 +5,7 @@ import { Badge } from "../ui/badge";
 import { Heart, ShoppingCart } from "lucide-react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
-function ShoppingProductTile({
+function WishlistProductTile({
   product,
   handleGetProductDetails,
   handleAddtoCart,
@@ -76,9 +76,10 @@ function ShoppingProductTile({
             </Button>
 
             <div
-              className="flex items-center justify-center w-12 cursor-pointer" // Fixed width for like button
+              className="flex items-center justify-center w-12 cursor-pointer"
               onClick={() => handleLikeProduct(product?._id, product.wishlist)}
             >
+              {/* <Heart className="h-7 w-7" /> */}
               {product.wishlist ? (
                 <FaHeart className="h-7 w-7 text-red-500" />
               ) : (
@@ -92,4 +93,4 @@ function ShoppingProductTile({
   );
 }
 
-export default ShoppingProductTile;
+export default WishlistProductTile;

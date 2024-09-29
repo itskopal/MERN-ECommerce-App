@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
+  updateProductWishlist,
 } from "@/store/shop/products-slice";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
 import { useNavigate } from "react-router-dom";
@@ -30,6 +31,7 @@ import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { useToast } from "@/hooks/use-toast";
 import { getFeatureImages } from "@/store/common-slice";
+import { fetchAllProducts } from "@/store/admin/products-slice";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -91,6 +93,27 @@ function ShoppingHome() {
         dispatch(fetchCartItems(user?.id));
         toast({
           title: "Product is added to cart",
+        });
+      }
+    });
+  }
+
+  function handleLikeProduct(currentUpdatedId, currentWishlistState) {
+    // Toggle the wishlist state
+    const newWishlistState = !currentWishlistState;
+
+    dispatch(
+      updateProductWishlist({
+        id: currentUpdatedId,
+        wishlist: newWishlistState, // Pass the toggled state
+      })
+    ).then((data) => {
+      console.log(data, "update");
+
+      if (data?.payload?.success) {
+        dispatch(fetchAllProducts());
+        toast({
+          title: "Wishlist Updated!",
         });
       }
     });
@@ -237,6 +260,7 @@ function ShoppingHome() {
                     handleGetProductDetails={handleGetProductDetails}
                     product={productItem}
                     handleAddtoCart={handleAddtoCart}
+                    handleLikeProduct={handleLikeProduct}
                   />
                 ))
               : null}

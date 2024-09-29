@@ -17,7 +17,7 @@ import {
   editProduct,
   fetchAllProducts,
 } from "@/store/admin/products-slice";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Loader2 } from "lucide-react";
 import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -47,6 +47,7 @@ function AdminProducts() {
   //const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const [imageLoadingState, setImageLoadingState] = useState(false);
   const [currentEditedId, setCurrentEditedId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const { productList } = useSelector((state) => state.adminProducts);
   const dispatch = useDispatch();
@@ -54,6 +55,7 @@ function AdminProducts() {
 
   function onSubmit(event) {
     event.preventDefault();
+    setLoading(true);
 
     // Create FormData object to handle file uploads
     const formDataObj = new FormData();
@@ -105,17 +107,21 @@ function AdminProducts() {
             //   image: uploadedImageUrl,
             // }
           )
-        ).then((data) => {
-          if (data?.payload?.success) {
-            dispatch(fetchAllProducts());
-            setOpenCreateProductsDialog(false);
-            //setImageFile(null);
-            setFormData(initialFormData);
-            toast({
-              title: "Product add successfully",
-            });
-          }
-        });
+        )
+          .then((data) => {
+            if (data?.payload?.success) {
+              dispatch(fetchAllProducts());
+              setOpenCreateProductsDialog(false);
+              //setImageFile(null);
+              setFormData(initialFormData);
+              toast({
+                title: "Product add successfully",
+              });
+            }
+          })
+          .finally(() => {
+            setLoading(false); // Set loading to false when the process finishes
+          });
   }
 
   function handleDelete(getCurrentProductId) {
@@ -201,9 +207,19 @@ function AdminProducts() {
               onSubmit={onSubmit}
               formData={formData}
               setFormData={setFormData}
-              buttonText={currentEditedId !== null ? "Edit" : "Add"}
+              //buttonText={currentEditedId !== null ? "Edit" : "Add"}
+              buttonText={
+                loading ? (
+                  <Loader2 className="animate-spin" />
+                ) : currentEditedId !== null ? (
+                  "Edit"
+                ) : (
+                  "Add"
+                )
+              }
               formControls={addProductFormElements}
-              isBtnDisabled={!isFormValid()}
+              isBtnDisabled={!isFormValid() || loading} // Disable button during loading
+              //isBtnDisabled={!isFormValid()}
             />
           </div>
         </SheetContent>

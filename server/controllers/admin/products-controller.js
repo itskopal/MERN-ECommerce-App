@@ -1,26 +1,27 @@
 //const { imageUploadUtil } = require("../../helpers/cloudinary");
 const cloudinary = require("cloudinary").v2;
+const { imageUploadUtil } = require("../../middleware/multer");
 const Product = require("../../models/Product");
 
 //handle single image upload
-// const handleImageUpload = async (req, res) => {
-//   try {
-//     const b64 = Buffer.from(req.file.buffer).toString("base64");
-//     const url = "data:" + req.file.mimetype + ";base64," + b64;
-//     const result = await imageUploadUtil(url);
+const handleImageUpload = async (req, res) => {
+  try {
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+    const url = "data:" + req.file.mimetype + ";base64," + b64;
+    const result = await imageUploadUtil(url);
 
-//     res.json({
-//       success: true,
-//       result,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.json({
-//       success: false,
-//       message: "Error occured",
-//     });
-//   }
-// };
+    res.json({
+      success: true,
+      result,
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({
+      success: false,
+      message: "Error occured",
+    });
+  }
+};
 
 //add a new product with single image
 // const addProduct = async (req, res) => {
@@ -168,12 +169,37 @@ const addProduct = async (req, res) => {
       (item) => item !== undefined
     );
 
+    //if using disk storage
+    // let imagesUrl = await Promise.all(
+    //   images.map(async (item) => {
+    //     let result = await cloudinary.uploader.upload(item.path, {
+    //       resource_type: "image",
+    //     });
+    //     return result.secure_url;
+    //   })
+    // );
+
+    // Helper function to upload buffer to Cloudinary {if using memorystorage}
+    const uploadImageToCloudinary = (file) => {
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          { resource_type: "image" },
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result.secure_url);
+            }
+          }
+        );
+        uploadStream.end(file.buffer); // Pass the file buffer to Cloudinary
+      });
+    };
+
+    // Upload all images and get URLs
     let imagesUrl = await Promise.all(
       images.map(async (item) => {
-        let result = await cloudinary.uploader.upload(item.path, {
-          resource_type: "image",
-        });
-        return result.secure_url;
+        return await uploadImageToCloudinary(item);
       })
     );
 
@@ -298,7 +324,7 @@ const deleteProduct = async (req, res) => {
 };
 
 module.exports = {
-  //handleImageUpload,
+  handleImageUpload,
   //handleMultipleImageUploads,
   addProduct,
   fetchAllProducts,

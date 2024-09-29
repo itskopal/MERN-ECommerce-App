@@ -63,6 +63,8 @@ export const addProductFormElements = [
       { id: "kids", label: "Kids" },
       { id: "accessories", label: "Accessories" },
       { id: "footwear", label: "Footwear" },
+      { id: "mobiles", label: "mobiles" },
+      { id: "electronics", label: "electronics" },
     ],
   },
   {
@@ -150,6 +152,8 @@ export const categoryOptionsMap = {
   kids: "Kids",
   accessories: "Accessories",
   footwear: "Footwear",
+  mobiles: "mobiles",
+  electronics: "electronics",
 };
 
 export const brandOptionsMap = {

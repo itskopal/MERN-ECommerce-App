@@ -39,6 +39,34 @@ export const fetchProductDetails = createAsyncThunk(
   }
 );
 
+export const updateProductWishlist = createAsyncThunk(
+  "/products/updateProductWishlist",
+  async ({ id, wishlist }) => {
+    const result = await axios.put(
+      `http://localhost:5000/api/shop/products/update/${id}`,
+      { wishlist },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return result?.data;
+  }
+);
+
+export const getAllWishlistProduct = createAsyncThunk(
+  "/products/getAllWishlistProduct",
+  async () => {
+    const result = await axios.get(
+      "http://localhost:5000/api/shop/products/fetchwishlist"
+    );
+
+    return result?.data;
+  }
+);
+
 const shoppingProductSlice = createSlice({
   name: "shoppingProducts",
   initialState,
@@ -70,6 +98,17 @@ const shoppingProductSlice = createSlice({
       .addCase(fetchProductDetails.rejected, (state, action) => {
         state.isLoading = false;
         state.productDetails = null;
+      })
+      .addCase(getAllWishlistProduct.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getAllWishlistProduct.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.wishlistProductList = action.payload.data;
+      })
+      .addCase(getAllWishlistProduct.rejected, (state, action) => {
+        state.isLoading = false;
+        state.wishlistProductList = [];
       });
   },
 });

@@ -1,4 +1,11 @@
-import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import {
+  Heart,
+  HousePlug,
+  LogOut,
+  Menu,
+  ShoppingCart,
+  UserCog,
+} from "lucide-react";
 import {
   Link,
   useLocation,
@@ -82,6 +89,15 @@ function HeaderRightContent() {
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
+      {/* wishlist button */}
+      <div
+        onClick={() => navigate("/shop/wishlist")}
+        className="cursor-pointer"
+      >
+        <Heart className="h-7 w-7" />
+      </div>
+
+      {/* cart button */}
       <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
         <Button
           onClick={() => setOpenCartSheet(true)}

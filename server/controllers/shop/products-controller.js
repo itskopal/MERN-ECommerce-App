@@ -80,4 +80,60 @@ const getProductDetails = async (req, res) => {
   }
 };
 
-module.exports = { getFilteredProducts, getProductDetails };
+const updateProductWishlist = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { wishlist } = req.body;
+    let findProduct = await Product.findById(id);
+
+    if (!findProduct)
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+
+    findProduct.wishlist = wishlist;
+
+    await findProduct.save();
+    res.status(200).json({
+      success: true,
+      data: findProduct,
+      message: "Wishlist updated successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error occured",
+    });
+  }
+};
+
+const getAllWishlistProduct = async (req, res) => {
+  try {
+    const products = await Product.find({ wishlist: true });
+    // const products = await Product.find({ wishlist: true }).select(
+    //   "_id title description wishlist"
+    // );
+    const wishlistCount = await Product.countDocuments({ wishlist: true });
+
+    res.status(200).json({
+      success: true,
+      data: products,
+      wishlistCount,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Error occured",
+    });
+  }
+};
+
+module.exports = {
+  getFilteredProducts,
+  getProductDetails,
+  updateProductWishlist,
+  getAllWishlistProduct,
+};
