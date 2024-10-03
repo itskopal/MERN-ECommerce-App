@@ -10,16 +10,23 @@ function WishlistProductTile({
   handleGetProductDetails,
   handleAddtoCart,
   handleLikeProduct,
+  isWishlisted,
 }) {
   return (
     <Card className="w-full max-w-sm mx-auto">
       <div onClick={() => handleGetProductDetails(product?._id)}>
         <div className="relative">
-          <img
-            src={product?.images[0]}
-            alt={product?.title}
-            className="w-full h-[300px] object-cover rounded-t-lg cursor-pointer"
-          />
+          {product?.images?.length > 0 ? (
+            <img
+              src={product?.images[0]}
+              alt={product?.title}
+              className="w-full h-[300px] object-cover rounded-t-lg cursor-pointer"
+            />
+          ) : (
+            <div className="w-full h-[300px] flex items-center justify-center bg-gray-200">
+              <span>No Image Available</span>
+            </div>
+          )}
           {product?.totalStock === 0 ? (
             <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
               Out Of Stock
@@ -77,10 +84,10 @@ function WishlistProductTile({
 
             <div
               className="flex items-center justify-center w-12 cursor-pointer"
-              onClick={() => handleLikeProduct(product?._id, product.wishlist)}
+              onClick={() => handleLikeProduct(product?._id, isWishlisted)}
             >
               {/* <Heart className="h-7 w-7" /> */}
-              {product.wishlist ? (
+              {isWishlisted ? (
                 <FaHeart className="h-7 w-7 text-red-500" />
               ) : (
                 <FaRegHeart className="h-7 w-7 text-gray-500" />

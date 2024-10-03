@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
+  getAllWishlistProduct,
   updateProductWishlist,
 } from "@/store/shop/products-slice";
 import ShoppingProductTile from "@/components/shopping-view/product-tile";
@@ -31,7 +32,6 @@ import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import { useToast } from "@/hooks/use-toast";
 import { getFeatureImages } from "@/store/common-slice";
-import { fetchAllProducts } from "@/store/admin/products-slice";
 
 const categoriesWithIcon = [
   { id: "men", label: "Men", icon: ShirtIcon },
@@ -54,7 +54,7 @@ const brandsWithIcon = [
 
 function ShoppingHome() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const { productList, productDetails } = useSelector(
+  const { productList, productDetails, userWishlist } = useSelector(
     (state) => state.shopProducts
   );
   const { featureImageList } = useSelector((state) => state.commonFeature);
@@ -98,26 +98,41 @@ function ShoppingHome() {
     });
   }
 
-  function handleLikeProduct(currentUpdatedId, currentWishlistState) {
-    // Toggle the wishlist state
-    const newWishlistState = !currentWishlistState;
+  // Handle wishlist functionality
+  function handleLikeProduct(productId, isWishlisted) {
+    const newWishlistState = !isWishlisted;
 
     dispatch(
       updateProductWishlist({
-        id: currentUpdatedId,
-        wishlist: newWishlistState, // Pass the toggled state
+        userId: user.id,
+        productId,
+        wishlist: newWishlistState,
       })
-    ).then((data) => {
-      console.log(data, "update");
+    )
+      .then((data) => {
+        console.log(data);
 
-      if (data?.payload?.success) {
-        dispatch(fetchAllProducts());
+        if (data.payload.success) {
+          //dispatch(fetchAllProducts());
+          dispatch(getAllWishlistProduct(user?.id));
+          toast({
+            title: "Wishlist Updated!",
+            description: newWishlistState
+              ? "Product added to your wishlist."
+              : "Product removed from your wishlist.",
+          });
+        }
+      })
+      .catch((error) => {
         toast({
-          title: "Wishlist Updated!",
+          title: "Error",
+          description: "Failed to update wishlist.",
+          type: "error",
         });
-      }
-    });
+      });
   }
+
+  console.log(userWishlist, "userWishlist");
 
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
@@ -261,6 +276,13 @@ function ShoppingHome() {
                     product={productItem}
                     handleAddtoCart={handleAddtoCart}
                     handleLikeProduct={handleLikeProduct}
+                    //isWishlisted={userWishlist.includes(productItem._id)}
+                    isWishlisted={
+                      Array.isArray(userWishlist?.wishlist) &&
+                      userWishlist.wishlist.some(
+                        (wish) => wish._id === productItem._id
+                      )
+                    }
                   />
                 ))
               : null}

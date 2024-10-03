@@ -166,10 +166,40 @@ const getAllOrdersByUser = async (req, res) => {
   }
 };
 
+// const getOrderDetails = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const order = await Order.findById(id);
+
+//     if (!order) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Order not found!",
+//       });
+//     }
+
+//     res.status(200).json({
+//       success: true,
+//       data: order,
+//     });
+//   } catch (e) {
+//     console.log(e);
+//     res.status(500).json({
+//       success: false,
+//       message: "Some error occured!",
+//     });
+//   }
+// };
+
 const getOrderDetails = async (req, res) => {
   try {
     const { id } = req.params;
-    const order = await Order.findById(id);
+
+    // Populate the product details including images
+    const order = await Order.findById(id).populate({
+      path: "cartItems.productId",
+      select: "images title price salePrice", // Select only the fields you need
+    });
 
     if (!order) {
       return res.status(404).json({
@@ -178,15 +208,28 @@ const getOrderDetails = async (req, res) => {
       });
     }
 
+    // Map through the cartItems to extract the populated product data
+    const populatedCartItems = order.cartItems.map((item) => ({
+      productId: item.productId._id,
+      images: item.productId.images, // Get the images from populated product
+      title: item.productId.title,
+      price: item.productId.price,
+      salePrice: item.productId.salePrice,
+      quantity: item.quantity,
+    }));
+
     res.status(200).json({
       success: true,
-      data: order,
+      data: {
+        ...order._doc,
+        cartItems: populatedCartItems, // Return the populated cart items
+      },
     });
   } catch (e) {
     console.log(e);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "Some error occurred!",
     });
   }
 };

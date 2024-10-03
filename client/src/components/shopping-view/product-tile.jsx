@@ -10,6 +10,7 @@ function ShoppingProductTile({
   handleGetProductDetails,
   handleAddtoCart,
   handleLikeProduct,
+  isWishlisted,
 }) {
   return (
     <Card className="w-full max-w-sm mx-auto">
@@ -75,11 +76,12 @@ function ShoppingProductTile({
               Add to cart
             </Button>
 
+            {/* Wishlist Button */}
             <div
-              className="flex items-center justify-center w-12 cursor-pointer" // Fixed width for like button
-              onClick={() => handleLikeProduct(product?._id, product.wishlist)}
+              className="flex items-center justify-center w-12 cursor-pointer"
+              onClick={() => handleLikeProduct(product?._id, isWishlisted)}
             >
-              {product.wishlist ? (
+              {isWishlisted ? (
                 <FaHeart className="h-7 w-7 text-red-500" />
               ) : (
                 <FaRegHeart className="h-7 w-7 text-gray-500" />

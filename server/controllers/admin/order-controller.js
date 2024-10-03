@@ -28,7 +28,10 @@ const getOrderDetailsForAdmin = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const order = await Order.findById(id);
+    const order = await Order.findById(id).populate({
+      path: "cartItems.productId",
+      select: "images title price ",
+    });
 
     if (!order) {
       return res.status(404).json({
@@ -37,9 +40,21 @@ const getOrderDetailsForAdmin = async (req, res) => {
       });
     }
 
+    // Map through the cartItems to extract the populated product data
+    const populatedCartItems = order.cartItems.map((item) => ({
+      productId: item.productId._id,
+      images: item.productId.images,
+      title: item.productId.title,
+      price: item.productId.price,
+      quantity: item.quantity,
+    }));
+
     res.status(200).json({
       success: true,
-      data: order,
+      data: {
+        ...order._doc,
+        cartItems: populatedCartItems,
+      },
     });
   } catch (e) {
     console.log(e);

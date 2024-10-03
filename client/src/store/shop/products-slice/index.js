@@ -5,6 +5,7 @@ const initialState = {
   isLoading: false,
   productList: [],
   productDetails: null,
+  userWishlist: [],
 };
 
 export const fetchAllFilteredProducts = createAsyncThunk(
@@ -41,9 +42,9 @@ export const fetchProductDetails = createAsyncThunk(
 
 export const updateProductWishlist = createAsyncThunk(
   "/products/updateProductWishlist",
-  async ({ id, wishlist }) => {
+  async ({ userId, productId, wishlist }) => {
     const result = await axios.put(
-      `http://localhost:5000/api/shop/products/update/${id}`,
+      `http://localhost:5000/api/shop/products/wishlist/${userId}/${productId}`,
       { wishlist },
       {
         headers: {
@@ -58,9 +59,9 @@ export const updateProductWishlist = createAsyncThunk(
 
 export const getAllWishlistProduct = createAsyncThunk(
   "/products/getAllWishlistProduct",
-  async () => {
+  async (userId) => {
     const result = await axios.get(
-      "http://localhost:5000/api/shop/products/fetchwishlist"
+      `http://localhost:5000/api/shop/products/wishlist/${userId}`
     );
 
     return result?.data;
@@ -103,12 +104,14 @@ const shoppingProductSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getAllWishlistProduct.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.wishlistProductList = action.payload.data;
+        state.userWishlist = action.payload; // Wishlist array from backend
       })
       .addCase(getAllWishlistProduct.rejected, (state, action) => {
         state.isLoading = false;
-        state.wishlistProductList = [];
+        state.userWishlist = [];
+      })
+      .addCase(updateProductWishlist.fulfilled, (state, action) => {
+        state.userWishlist = action.payload; // Updated wishlist
       });
   },
 });

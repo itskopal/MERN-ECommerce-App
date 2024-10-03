@@ -4,14 +4,14 @@ const {
   getFilteredProducts,
   getProductDetails,
   updateProductWishlist,
-  getAllWishlistProduct,
+  getWishlistProducts,
 } = require("../../controllers/shop/products-controller");
 
 const router = express.Router();
 
 router.get("/get", getFilteredProducts);
 router.get("/get/:id", getProductDetails);
-router.put("/update/:id", updateProductWishlist);
-router.get("/fetchwishlist", getAllWishlistProduct);
+router.put("/wishlist/:userId/:productId", updateProductWishlist);
+router.get("/wishlist/:userId", getWishlistProducts);
 
 module.exports = router;

@@ -15,6 +15,8 @@ import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
+  getAllWishlistProduct,
+  updateProductWishlist,
 } from "@/store/shop/products-slice";
 import { ArrowUpDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -39,7 +41,7 @@ function createSearchParamsHelper(filterParams) {
 
 function ShoppingListing() {
   const dispatch = useDispatch();
-  const { productList, productDetails } = useSelector(
+  const { productList, productDetails, userWishlist } = useSelector(
     (state) => state.shopProducts
   );
   const { cartItems } = useSelector((state) => state.shopCart);
@@ -120,6 +122,39 @@ function ShoppingListing() {
     });
   }
 
+  // Handle wishlist functionality
+  function handleLikeProduct(productId, isWishlisted) {
+    const newWishlistState = !isWishlisted;
+
+    dispatch(
+      updateProductWishlist({
+        userId: user.id,
+        productId,
+        wishlist: newWishlistState,
+      })
+    )
+      .then((data) => {
+        console.log(data);
+
+        if (data.payload.success) {
+          dispatch(getAllWishlistProduct(user?.id));
+          toast({
+            title: "Wishlist Updated!",
+            description: newWishlistState
+              ? "Product added to your wishlist."
+              : "Product removed from your wishlist.",
+          });
+        }
+      })
+      .catch((error) => {
+        toast({
+          title: "Error",
+          description: "Failed to update wishlist.",
+          type: "error",
+        });
+      });
+  }
+
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
@@ -193,6 +228,13 @@ function ShoppingListing() {
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
                   handleAddtoCart={handleAddtoCart}
+                  handleLikeProduct={handleLikeProduct}
+                  isWishlisted={
+                    Array.isArray(userWishlist?.wishlist) &&
+                    userWishlist.wishlist.some(
+                      (wish) => wish._id === productItem._id
+                    )
+                  }
                 />
               ))
             : null}

@@ -68,3 +68,16 @@
 ::-webkit-scrollbar {
   display: none;
 }
+
+/* ul::-webkit-scrollbar {
+  width: 8px;
+}
+
+ul::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+ul::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+} */

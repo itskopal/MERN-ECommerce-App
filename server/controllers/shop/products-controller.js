@@ -1,4 +1,5 @@
 const Product = require("../../models/Product");
+const User = require("../../models/User");
 
 const getFilteredProducts = async (req, res) => {
   try {
@@ -80,54 +81,105 @@ const getProductDetails = async (req, res) => {
   }
 };
 
+// const updateProductWishlist = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { wishlist } = req.body;
+//     let findProduct = await Product.findById(id);
+
+//     if (!findProduct)
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found",
+//       });
+
+//     findProduct.wishlist = wishlist;
+
+//     await findProduct.save();
+//     res.status(200).json({
+//       success: true,
+//       data: findProduct,
+//       message: "Wishlist updated successfully",
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Error occured",
+//     });
+//   }
+// };
+
+// Add or remove product from wishlist
 const updateProductWishlist = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { wishlist } = req.body;
-    let findProduct = await Product.findById(id);
+    const { userId, productId } = req.params;
 
-    if (!findProduct)
-      return res.status(404).json({
+    // Validate input
+    if (!userId || !productId) {
+      return res.status(400).json({
         success: false,
-        message: "Product not found",
+        message: "User ID and Product ID are required",
       });
+    }
 
-    findProduct.wishlist = wishlist;
+    // Find the user and the product
+    const user = await User.findById(userId);
+    const product = await Product.findById(productId);
 
-    await findProduct.save();
-    res.status(200).json({
-      success: true,
-      data: findProduct,
-      message: "Wishlist updated successfully",
-    });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Product not found" });
+    }
+
+    const isWishlisted = user.wishlist.includes(productId);
+
+    // Toggle wishlist status
+    if (isWishlisted) {
+      user.wishlist = user.wishlist.filter((id) => id.toString() !== productId);
+      message = "Product removed from wishlist";
+    } else {
+      user.wishlist.push(productId);
+      message = "Product added to wishlist";
+    }
+
+    await user.save();
+    return res
+      .status(200)
+      .json({ success: true, wishlist: user.wishlist, message });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Error occured",
-    });
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
-const getAllWishlistProduct = async (req, res) => {
+// Fetch wishlist products for a user
+const getWishlistProducts = async (req, res) => {
   try {
-    const products = await Product.find({ wishlist: true });
-    // const products = await Product.find({ wishlist: true }).select(
-    //   "_id title description wishlist"
-    // );
-    const wishlistCount = await Product.countDocuments({ wishlist: true });
+    const { userId } = req.params;
 
-    res.status(200).json({
-      success: true,
-      data: products,
-      wishlistCount,
-    });
+    const user = await User.findById(userId).populate("wishlist");
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    return res.status(200).json({ success: true, wishlist: user.wishlist });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Error occured",
-    });
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -135,5 +187,5 @@ module.exports = {
   getFilteredProducts,
   getProductDetails,
   updateProductWishlist,
-  getAllWishlistProduct,
+  getWishlistProducts,
 };

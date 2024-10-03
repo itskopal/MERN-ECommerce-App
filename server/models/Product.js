@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const ProductSchema = new mongoose.Schema(
   {
+    userId: String,
     //image: String,
     images: { type: Array },
     title: String,
@@ -12,7 +13,6 @@ const ProductSchema = new mongoose.Schema(
     salePrice: Number,
     totalStock: Number,
     averageReview: Number,
-    wishlist: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
