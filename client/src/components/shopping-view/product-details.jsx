@@ -125,7 +125,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 onClick={() => setImage(item)}
                 src={item}
                 key={index}
-                className="w-[10%] h-[80px] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer"
+                className="w-[10%] h-[80px] sm:w-full sm:mb-3 flex-shrink-0 cursor-pointer hover:scale-110"
                 alt={productDetails?.title}
               />
             ))}
@@ -133,7 +133,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
           <div className="w-full sm:w-[80%]">
             <img
               src={image}
-              className="w-full h-auto"
+              className="w-full h-auto "
               alt={productDetails?.title}
             />
           </div>
@@ -142,20 +142,20 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         <div className="">
           <div>
             <h1 className="text-3xl font-extrabold">{productDetails?.title}</h1>
-            <p className="text-muted-foreground text-2xl mb-5 mt-4">
+            <p className="text-muted-foreground text-lg mb-5 mt-4">
               {productDetails?.description}
             </p>
           </div>
           <div className="flex items-center justify-between">
             <p
-              className={`text-3xl font-bold text-primary ${
+              className={`text-xl font-bold text-primary ${
                 productDetails?.salePrice > 0 ? "line-through" : ""
               }`}
             >
               ${productDetails?.price}
             </p>
             {productDetails?.salePrice > 0 ? (
-              <p className="text-2xl font-bold text-muted-foreground">
+              <p className="text-xl font-bold text-muted-foreground">
                 ${productDetails?.salePrice}
               </p>
             ) : null}
@@ -189,9 +189,10 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
               </Button>
             )}
           </div>
+
           <Separator />
 
-          <div className="max-h-[300px] overflow-auto">
+          <div className="max-h-[300px] overflow-auto px-1">
             <h2 className="text-xl font-bold mb-4">Reviews</h2>
             <div className="grid gap-6">
               {reviews && reviews.length > 0 ? (
@@ -220,7 +221,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
               )}
             </div>
 
-            <div className="mt-10 flex-col flex gap-2">
+            <div className="mt-10 flex-col flex gap-2 px-1">
               <Label>Write a review</Label>
               <div className="flex gap-1">
                 <StarRatingComponent

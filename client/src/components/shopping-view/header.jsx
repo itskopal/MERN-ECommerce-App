@@ -30,6 +30,7 @@ import { logoutUser } from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
+import { FaHeart } from "react-icons/fa";
 
 function MenuItems() {
   const navigate = useNavigate();
@@ -94,7 +95,8 @@ function HeaderRightContent() {
         onClick={() => navigate("/shop/wishlist")}
         className="cursor-pointer"
       >
-        <Heart className="h-7 w-7" />
+        {/* <Heart className="h-7 w-7" /> */}
+        <FaHeart className="h-7 w-7 text-red-600" />
       </div>
 
       {/* cart button */}

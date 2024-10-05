@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { SheetContent, SheetHeader, SheetTitle } from "../ui/sheet";
 import UserCartItemsContent from "./cart-items-content";
 import { ShoppingCart } from "lucide-react";
+import emptyCart from "../../assets/empty-cart.webp";
 
 function UserCartWrapper({ cartItems, setOpenCartSheet }) {
   const navigate = useNavigate();
@@ -35,7 +36,16 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
             <UserCartItemsContent key={item.id} cartItem={item} />
           ))
         ) : (
-          <p>Your cart is empty.</p>
+          <div className="flex flex-col justify-center items-center">
+            <img
+              src={emptyCart}
+              alt="cart is empty"
+              className="w-[450px] h-[250px] mb-4"
+            />
+            <p className="text-lg text-red-600 text-center mb-4">
+              Your cart is empty !!
+            </p>
+          </div>
         )}
       </div>
 

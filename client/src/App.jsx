@@ -24,6 +24,7 @@ import PaypalReturnPage from "./pages/shopping-view/paypal-return";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
 import ShoppingWishlist from "./pages/shopping-view/wishlist";
+import OrderInvoice from "./components/shopping-view/order-invoice";
 
 function App() {
   const { user, isAuthenticated, isLoading } = useSelector(
@@ -104,6 +105,7 @@ function App() {
             <Route path="wishlist" element={<ShoppingWishlist />} />
           </Route>
 
+          <Route path="/order-invoice" element={<OrderInvoice />} />
           <Route path="/unauth-page" element={<UnauthPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import EmptyWishlist from "../../assets/wishlist-icon.jpg";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { DotLoader } from "react-spinners";
 
 function ShoppingWishlist() {
   const dispatch = useDispatch();
@@ -21,6 +22,8 @@ function ShoppingWishlist() {
     (state) => state.shopProducts
   );
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [loadingProducts, setLoadingProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { user } = useSelector((state) => state.auth);
 
   function handleGetProductDetails(getCurrentProductId) {
@@ -46,6 +49,8 @@ function ShoppingWishlist() {
 
   // Handle wishlist functionality
   function handleLikeProduct(productId, isWishlisted) {
+    setLoadingProducts((prev) => [...prev, productId]);
+
     const newWishlistState = !isWishlisted;
 
     dispatch(
@@ -68,12 +73,9 @@ function ShoppingWishlist() {
           });
         }
       })
-      .catch((error) => {
-        toast({
-          title: "Error",
-          description: "Failed to update wishlist.",
-          type: "error",
-        });
+      .finally(() => {
+        // Remove the product from loading state
+        setLoadingProducts((prev) => prev.filter((id) => id !== productId));
       });
   }
 
@@ -82,15 +84,25 @@ function ShoppingWishlist() {
   }, [productDetails]);
 
   useEffect(() => {
-    dispatch(getAllWishlistProduct(user?.id));
+    const fetchWishlist = async () => {
+      setLoading(true);
+      await dispatch(getAllWishlistProduct(user?.id));
+      setLoading(false);
+    };
+
+    fetchWishlist();
   }, [dispatch]);
 
-  console.log("User Wishlist:", userWishlist);
+  //console.log("User Wishlist:", userWishlist);
   const wishlistCount = userWishlist?.wishlist?.length || 0;
 
   return (
     <div>
-      {wishlistCount === 0 ? (
+      {loading ? (
+        <div className="flex justify-center items-center h-[100vh]">
+          <DotLoader className="bg-gray-400" />{" "}
+        </div>
+      ) : wishlistCount === 0 ? (
         <div className="flex flex-col items-center justify-center h-[80vh]">
           <img
             src={EmptyWishlist}
@@ -129,6 +141,7 @@ function ShoppingWishlist() {
                         (wish) => wish._id === productItem._id
                       )
                     }
+                    isLoading={loadingProducts.includes(productItem._id)}
                   />
                 ))
               : null}

@@ -2,7 +2,7 @@ import { Card, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
 import { brandOptionsMap, categoryOptionsMap } from "@/config";
 import { Badge } from "../ui/badge";
-import { Heart, ShoppingCart } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 function ShoppingProductTile({
@@ -19,7 +19,7 @@ function ShoppingProductTile({
           <img
             src={product?.images[0]}
             alt={product?.title}
-            className="w-full h-[300px] object-cover rounded-t-lg cursor-pointer"
+            className="w-full h-[300px] object-cover rounded-t-lg cursor-pointer hover:scale-110"
           />
           {product?.totalStock === 0 ? (
             <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
@@ -41,9 +41,10 @@ function ShoppingProductTile({
             <span className="text-[16px] text-muted-foreground">
               {categoryOptionsMap[product?.category]}
             </span>
-            <span className="text-[16px] text-muted-foreground">
+
+            {/* <span className="text-[16px] text-muted-foreground">
               {brandOptionsMap[product?.brand]}
-            </span>
+            </span> */}
           </div>
           <div className="flex justify-between items-center mb-2">
             <span
@@ -82,9 +83,9 @@ function ShoppingProductTile({
               onClick={() => handleLikeProduct(product?._id, isWishlisted)}
             >
               {isWishlisted ? (
-                <FaHeart className="h-7 w-7 text-red-500" />
+                <FaHeart className="h-7 w-7 text-red-600" />
               ) : (
-                <FaRegHeart className="h-7 w-7 text-gray-500" />
+                <FaRegHeart className="h-7 w-7 text-gray-500 hover:text-red-800" />
               )}
             </div>
           </>

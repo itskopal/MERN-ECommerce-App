@@ -113,7 +113,6 @@ function ShoppingHome() {
         console.log(data);
 
         if (data.payload.success) {
-          //dispatch(fetchAllProducts());
           dispatch(getAllWishlistProduct(user?.id));
           toast({
             title: "Wishlist Updated!",
@@ -132,7 +131,7 @@ function ShoppingHome() {
       });
   }
 
-  console.log(userWishlist, "userWishlist");
+  //console.log(userWishlist, "userWishlist");
 
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
@@ -154,6 +153,7 @@ function ShoppingHome() {
         sortParams: "price-lowtohigh",
       })
     );
+    dispatch(getAllWishlistProduct(user?.id));
   }, [dispatch]);
 
   // console.log(productList, "productList");
