@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
@@ -22,9 +24,7 @@ const { connectCloudinary } = require("./helpers/cloudinary");
 
 mongoose
   //.connect("db_url")
-  .connect(
-    "mongodb+srv://itskopal021:codewithkopal@cluster0.52gxc.mongodb.net/"
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
@@ -35,7 +35,7 @@ connectCloudinary();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_BASE_URI,
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
