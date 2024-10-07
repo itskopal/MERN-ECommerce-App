@@ -75,7 +75,9 @@ const loginUser = async (req, res) => {
       { expiresIn: "60m" }
     );
 
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    //res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    res.cookie("token", token, { httpOnly: true, secure: true }).json({
+      //change after deploy
       success: true,
       message: "Logged in successfully",
       user: {
